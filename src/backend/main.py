@@ -1,40 +1,26 @@
-
-
 import mongoengine as db
 from api_constant import mongo_password
 database_name = "interntask"
 password =mongo_password
-DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
-db.connect(host=DB_URL)
+
 from classes import User,Blog 
 
+from flask import Flask, jsonify, request
+from pymongo import MongoClient
+from flask_cors import CORS 
+from bson import ObjectId
+import json
+import jwt
+from datetime import datetime, timedelta
+from flask_bcrypt import Bcrypt
+from functools import wraps
 
-# class Blog(db.Document):
-#     user_id=db.ObjectIdField(required=True)
-#     author=db.StringField(required=True)
-#     title = db.StringField(Required=True)
-#     description = db.StringField(Required=True)
-    
-#     def to_json(self):
-#         return{
-#             "user_id": self.user_id,
-#             "author": self.author,
-#             "title": self.title,
-#             "description": self.description
-#         }
 
-# print("\n Create a blog")
-# blog=Blog(
-#           user_id="637a99320a792735f42e026e",
-#           author="Berke",
-#           title="Deneme",
-#           description="Lorem ipis rem ipis rem "
-#         )
-# blog.save()
-
-user=User(name="Efe",surname="Dzgn",username="dzgnefe",password="123456",email="duzgunberke2@gmail.com")
+user=User(name="Beyza",surname="Sonkaya",username="beyzos",password="123456",email="beyzz@gmail.com")
 user.save()
 
+ #region Sonra ise yarar
+ 
 # print("\nFetch a blog")
 # blog=Blog.objects(blog_id=1).first()
 # # print(blog.to_json())
@@ -43,19 +29,6 @@ user.save()
 #             author="Efe")
 # print(blog.to_json())
 
-# print("\n Create a another blog")
-# blog=Blog(blog_id=2,
-#           name="Deneme 3",
-#           author="Aslı"
-#         )
-# blog.save()
-
-# print("\n Create a another blog")
-# blog=Blog(blog_id=3,
-#           name="Selam Deneme",
-#           author="Aslı"
-#         )
-# blog.save()
 
 # print("\n Fetch all blogs")
 # blogs=[]
@@ -72,40 +45,35 @@ user.save()
 # blog =Blog.objects(blog_id=2).first()
 # blog.delete()
 
-# class User(db.Document):
-#     name = db.StringField()
-#     surname=db.StringField()
-#     username = db.StringField(Required=True,unique=True)
-#     password = db.StringField(Required=True)
-#     email = db.EmailField()
-    
-#     def to_json(self):
-#         return{
-#             "name": self.name,
-#             "surname": self.surname,
-#             "username": self.username,
-#             "password":self.password,
-#             "email": self.email
-#         }
+#endregion
 
-# user=User(
-#           name="Berke",
-#           surname="Duzgun",
-#           username="duzgunberke",
-#           password="123456",
-#           email="duzgunberke@gmail.com")
-# user.save()
+app= Flask(__name__)
+CORS(app, resources={r"/*":{'origins':"*"}})
+bcrypt = Bcrypt(app)
+secret = "***************"
+app.config.from_object(__name__)
 
-# app= Flask(__name__)
+DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
+db.connect(host=DB_URL)
 
-# app.config.from_object(__name__)
-
-# CORS(app, resources={r"/*":{'origins':"*"}})
+def tokenReq(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if "Authorization" in request.headers:
+            token = request.headers["Authorization"]
+            try:
+                jwt.decode(token, secret)
+            except:
+                return jsonify({"status": "fail", "message": "unauthorized"}), 401
+            return f(*args, **kwargs)
+        else:
+            return jsonify({"status": "fail", "message": "unauthorized"}), 401
+    return decorated
 
 
-# @app.route('/',methods=['GET'])
-# def greetings():
-#     return("Hi everyone")
+@app.route('/',methods=['GET'])
+def greetings():
+     return("Hi everyone, this project is working !!!")
 
 
 # @app.route('/shark',methods=['GET'])
