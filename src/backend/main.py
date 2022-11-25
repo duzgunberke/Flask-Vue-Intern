@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
 from functools import wraps
 from pymongo import MongoClient
-
+from flasgger import Swagger
 
 
  #region Sonra ise yarar
@@ -46,10 +46,12 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+swagger = Swagger(app)
 bcrypt = Bcrypt(app)
-secret = "***************"
+app.config["SECRET_KEY"] = "csharpbetternthanpython18"
 DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
 db.connect(host=DB_URL)
+
 print("\n Fetch all blogs")
 blogs=[]
 for blog in Blog.objects():
@@ -60,15 +62,23 @@ print(blogs)
 def tokenReq(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "Authorization" in request.headers:
-            token = request.headers["Authorization"]
-            try:
-                jwt.decode(token, secret)
-            except:
-                return jsonify({"status": "fail", "message": "unauthorized"}), 401
-            return f(*args, **kwargs)
-        else:
-            return jsonify({"status": "fail", "message": "unauthorized"}), 401
+         token = None
+
+         if 'token' in request.headers:
+            token = request.headers['token']
+
+         if not token:
+            return jsonify({'message': 'a valid token is missing'}),401
+         try:
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=[
+                'HS256'])  
+            current_user = User.objects.get(username=data["username"])
+
+         except:
+             return ('', 204)
+
+         return f(current_user, *args, **kwargs)
+     
     return decorated
 
 #region Default path
@@ -173,6 +183,24 @@ def save_user():
         
 #endregion
 
+#region Login
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method == "POST":
+        username = request.json['username']
+        password = request.json['password']  # password
+        user = User.objects.get(username=username)
+
+        if bcrypt.check_password_hash(user.password, user["password"]):
+                token = jwt.encode({'username': username, 'exp': datetime.datetime.utcnow(
+                ) + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
+                return jsonify({'token': token})
+
+        else:
+                return {"message": "Password invalid"}
+
+#endregion            
+
 
 
 
@@ -184,4 +212,4 @@ def save_user():
 #     return("This is a Sharkkkk")
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(use_reloader=True,debug=True, host="0.0.0.0", port=5000)
