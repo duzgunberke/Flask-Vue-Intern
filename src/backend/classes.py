@@ -27,7 +27,7 @@ class User(db.Document):
 
 
 class Blog(db.Document):
-    user_id = IntField(Required=True)
+    user_id = ObjectIdField(Required=True)
     title = StringField(Required=True)
     author = StringField(Required=True)
     description = StringField(Required=True)
