@@ -115,7 +115,7 @@ def getall():
     return jsonify({"status":status,'data': res, "message":message}), code    
 #endregion
 
-#region Get Blog By ID   // Burada body kısmından ID gondermesi yapıyor header kısmından olmalı
+#region Get Blog By ID               // Burada body kısmından ID gondermesi yapıyor header kısmından olmalı
 @app.route('/getblogbyid', methods=["POST"])
 def getBlogById():
     if request.method == "POST":
@@ -157,17 +157,17 @@ def addblog(current_user):
     return jsonify({"status":status,'data': res, "message":message}), code
 #endregion
 
-#region Update One Blog
-@app.route('/editblog/<item_id>', methods=['GET', 'POST'])
+#region Update One Blog             // Bozuk scym bole ise
+@app.route('/editttblog/<item_id>/', methods=['GET', 'POST'])
 @tokenReq
-def by_id(item_id):
-    data = {}
+def by_id(_id):
+    data = []
     code = 500
     message = ""
     status = "fail"
     try:
         if (request.method == 'POST'):
-            res = db['interntask.blog'].update_one({"_id": ObjectId(item_id)}, { "$set": request.get_json()})
+            res = db['interntask.blog'].update_one({"_id": ObjectId(_id)}, { "$set": request.get_json()})
             if res:
                 message = "updated successfully"
                 status = "successful"
@@ -177,8 +177,9 @@ def by_id(item_id):
                 status = "fail"
                 code = 404
         else:
-            data =  db['interntask.blog'].find_one({"_id": ObjectId(item_id)})
-            data['_id'] = str(data['_id'])
+            data =  Blog.objects.get(id=_id)
+            print("**********************************************_____________________**************************************")
+            print(data)
             if data:
                 message = "item found"
                 status = "successful"
