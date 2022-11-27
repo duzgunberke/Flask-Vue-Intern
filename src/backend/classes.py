@@ -3,6 +3,9 @@ import mongoengine as db
 import datetime
 import pytz
 from pytz import timezone
+import json
+from bson import json_util
+
 
 class User(Document):
     name = StringField()
@@ -17,13 +20,25 @@ class User(Document):
     turkey = timezone('Europe/Istanbul')
     date_modified = DateTimeField(default=aware_date.astimezone(turkey))
     
+    def to_json(self):
+            bson_data = {'name': self.name, 'surname': self.surname,'username': self.username,'password': self.password,'email': self.email}
 
+            json_data_with_backslashes = json_util.dumps(bson_data)
+            json_data = json.loads(json_data_with_backslashes)
+            return json_data
 
 class Blog(Document):
     user_id = ObjectIdField(Required=True)
     title = StringField(Required=True)
     author = StringField(Required=True)
     description = StringField(Required=True)
+    
+    def to_json(self):
+            bson_data = {'title': self.title, 'author': self.author,'description': self.description}
+
+            json_data_with_backslashes = json_util.dumps(bson_data)
+            json_data = json.loads(json_data_with_backslashes)
+            return json_data
     
 
 

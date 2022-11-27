@@ -14,35 +14,6 @@ from functools import wraps
 from pymongo import MongoClient
 from flasgger import Swagger
 
-
- #region Sonra ise yarar
- 
-# print("\nFetch a blog")
-# blog=Blog.objects(blog_id=1).first()
-# # print(blog.to_json())
-# print("\nUpdate a blog")
-# blog.update(name="Deneme 2",
-#             author="Efe")
-# print(blog.to_json())
-
-
-# print("\n Fetch all blogs")
-# blogs=[]
-# for blog in Blog.objects():
-#     blogs.append(blog.to_json())
-# print(blogs)    
-
-# print("\n Find blog whose name contains Selam")
-# for blog in Blog.objects(name__contains="Selam"):
-#     blogs.append(blog.to_json())
-
-
-# print("\nDelete a blog")
-# blog =Blog.objects(blog_id=2).first()
-# blog.delete()
-
-#endregion
-
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 swagger = Swagger(app)
@@ -61,24 +32,15 @@ print(blogs)
 def tokenReq(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        
-         token = None
-
-         if 'token' in request.headers:
-            token = request.headers['token']
-
-         if not token:
-            return jsonify({'message': 'a valid token is missing'})
-         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=[
-                'HS256'])  
-            current_user = User.objects.get(username=data["username"])
-
-         except:
-             return ('', 204)
-
-         return f(current_user, *args, **kwargs)
-     
+        if "token" in request.headers:
+            token = request.headers["token"]
+            try:
+                jwt.decode(token, app.config['SECRET_KEY'])
+            except:
+                return jsonify({"status": "fail", "message": "unauthorized"}), 401
+            return f(*args, **kwargs)
+        else:
+            return jsonify({"status": "fail", "message": "unauthorized"}), 401
     return decorated
 #endregion
 
@@ -128,27 +90,31 @@ def getBlogById():
 #region Insert One Blog
 @app.route('/addblog', methods=['POST'])
 @tokenReq
-def addblog(current_user):
+def addblog():
     res = []
     code = 500
     status = "fail"
     message = ""
+    token = request.headers["token"]
+    data = jwt.decode(token, app.config['SECRET_KEY'])
+    dummydata=User.objects.get(username=data["username"])
     try:
         if (request.method == 'POST'):
             title = request.json['title']
-            author = current_user["username"]
+            author=dummydata.username
             description = request.json['description']
             blog=Blog(title=title, author=author,description=description)
             blog.save()
             
-            if  blog:
+            if  blog !=0:
                 message = "item saved"
                 status = 'successful'
                 code = 201
                 res = "{}".format(blog.title)
             else:
                 message = "insert error"
-                res = 'fail'
+                status="fail"
+                res = 'Not working'
                 code = 500
         else:
              return "This method is not correct !"
@@ -158,16 +124,16 @@ def addblog(current_user):
 #endregion
 
 #region Update One Blog             // Bozuk scym bole ise
-@app.route('/editttblog/<item_id>/', methods=['GET', 'POST'])
+@app.route('/editblog/<item_id>/', methods=['GET', 'POST'])
 @tokenReq
-def by_id(_id):
-    data = []
+def by_id(item_id):
+    data = {}
     code = 500
     message = ""
     status = "fail"
     try:
         if (request.method == 'POST'):
-            res = db['interntask.blog'].update_one({"_id": ObjectId(_id)}, { "$set": request.get_json()})
+            res = db['interntask.blog'].update_one({"_id": ObjectId(item_id)}, { "$set": request.get_json()})
             if res:
                 message = "updated successfully"
                 status = "successful"
@@ -177,9 +143,7 @@ def by_id(_id):
                 status = "fail"
                 code = 404
         else:
-            data =  Blog.objects.get(id=_id)
-            print("**********************************************_____________________**************************************")
-            print(data)
+            data = Blog.objects.get(id=item_id).to_json()
             if data:
                 message = "item found"
                 status = "successful"
@@ -239,7 +203,7 @@ def login():
 #region Logout
 @app.route('/logout', methods=['POST'])
 @tokenReq
-def logout(current_user):
+def logout():
     return jsonify({"message": True})
 #endregion
 
@@ -250,6 +214,7 @@ def user():
     users = []
     for user in User.objects():  
         users.append(user.to_json())
+        print(users)
     # json_users=json.dumps(users)
     return make_response(jsonify(users)) 
 #endregion
