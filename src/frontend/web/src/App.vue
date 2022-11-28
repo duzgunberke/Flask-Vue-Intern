@@ -1,55 +1,77 @@
 <template>
-  <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+  <div id="app">
+    <NavComponent/> 
+    <div class="auth-wrapper">
+      <div class="auth-inner">
+         <RouterView />
       </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+    </div>
+  </div>
 </template>
 
 <script>
-
-export default {
+import NavComponent from './components/NavComponent.vue'
+export default{
   name: 'App',
+  components:{
+    NavComponent,
+  }
+}
 
-  data: () => ({
-    //
-  }),
-};
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;500&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet');
+*{
+  box-sizing: border-box;
+}
+
+body{
+  background-color:#FBFACD!important;
+  min-height:100vh;
+  font-weight: 400;
+  font-family: 'Fira Sans',sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6,label,span{
+  font-weight:500;
+  font-family:Fira Sans,sans-serif;
+}
+
+body,html,#app,#root,auth-wrapper{
+  width:100%;
+  height:100%;
+}
+
+#app{
+  text-align: center;
+}
+
+.auth-inner{
+  width:450px;
+  margin:auto;
+  background:#ffffff;
+  padding:40px 55px 45px 55px;
+  border-radius:15px;
+  transition:all .3s;
+}
+
+.auth-wrapper{
+  margin-top: 200px;
+  display:flex;
+  justify-content:center;
+  flex-direction: column;
+  text-align: left;
+}
+
+.auth-wrapper .form-control:focus{
+  border-color: blue;
+  box-shadow:none;
+}
+
+
+
+.custom-control-label{
+  font-weight:400;
+}
+</style>

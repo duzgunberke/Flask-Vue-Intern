@@ -1,13 +1,7 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import 'bootstrap/dist/css/bootstrap.css';
-import vuetify from './plugins/vuetify'
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router/index.js'
+import './conf/axios.js'
 
-Vue.config.productionTip = false
+createApp(App).use(router).mount('#app')
 
-new Vue({
-  router,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
