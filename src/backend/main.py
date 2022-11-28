@@ -175,6 +175,8 @@ def save_user():
             user = User(name=name, surname=surname,
                      username=username, password=password, email=email)
             user.save()  
+        else:
+            return {'message': 'Fill in the required fields'}   
 
     return {'message': 'successful user adding'}
 
