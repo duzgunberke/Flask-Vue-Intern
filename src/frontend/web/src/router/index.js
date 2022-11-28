@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Shark from '../components/Shark.vue'
+import Home from '../components/HomePage.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path : '/shark',
-    name : 'Shark',
-    component : Shark,
+    path : '/',
+    name : 'Home',
+    component : Home,
   }
 ]
 

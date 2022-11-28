@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button type="button" class="btn btn-warning">{{ msg }}</button>
+        <h5  class="text-center">{{ msg }}</h5>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 import axios from 'axios';
 
 export default{
-    name: 'Shark',
+    name: 'HomePage',
     data(){
         return{
             msg : ""
@@ -16,7 +16,7 @@ export default{
     },
     methods : {
         getReponse(){
-            const path="http://localhost:5000/shark";
+            const path="http://localhost:5000/blogs";
             axios.get(path)
             .then ((res)=> {
                 console.log(res.data)
