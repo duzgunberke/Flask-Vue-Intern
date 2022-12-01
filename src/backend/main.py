@@ -221,11 +221,5 @@ def user():
     return make_response(jsonify(users)) 
 #endregion
 
-
-
-# @app.route('/shark',methods=['GET'])
-# def shark():
-#     return("This is a Sharkkkk")
-
 if __name__ == '__main__':
     app.run(use_reloader=True,debug=True, host="0.0.0.0", port=5000)

@@ -3,7 +3,12 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default{
-    name:'HomeComponent'
+    name:'HomeComponent',
+    async created(){
+        const response=await axios.get('user');
+        console.log(response);
+    }
 }
 </script>
