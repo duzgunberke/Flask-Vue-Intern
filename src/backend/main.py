@@ -22,26 +22,25 @@ app.config["SECRET_KEY"] = "csharpbetternthanpython18"
 DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
 db.connect(host=DB_URL)
 
-print("\n Fetch all blogs")
-blogs=[]
-for blog in Blog.objects():
-    blogs.append(blog.to_json())
-print(blogs) 
-
 #region JWT Token
-def tokenReq(f):
+def token_Req(f):
     @wraps(f)
-    def decorated(*args, **kwargs):
-        if "token" in request.headers:
-            token = request.headers["token"]
-            try:
-                jwt.decode(token, app.config['SECRET_KEY'])
-            except:
-                return jsonify({"status": "fail", "message": "unauthorized"}), 401
-            return f(*args, **kwargs)
-        else:
-            return jsonify({"status": "fail", "message": "unauthorized"}), 401
-    return decorated
+    def decorator(*args, **kwargs):
+        token = None
+        # ensure the jwt-token is passed with the headers
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization']
+        if not token: # throw error if no token provided
+            return make_response(jsonify({"message": "A valid token is missing!"}), 401)
+        try:
+           # decode the token to obtain user username
+            data = jwt.decode(token, app.config['SECRET_KEY'],algorithms=['HS256'])
+            current_user = User.objects(username=data.get('username')).first()
+        except:
+            return make_response(jsonify({"message": "Invalid token!"}), 401)
+         # Return the user information attached to the token
+        return f(current_user, *args, **kwargs)
+    return decorator
 #endregion
 
 #region Default path
@@ -77,7 +76,7 @@ def getall():
     return jsonify({"status":status,'data': res, "message":message}), code    
 #endregion
 
-#region Get Blog By ID               // Burada body kısmından ID gondermesi yapıyor header kısmından olmalı
+#region Get Blog By ID               
 @app.route('/getblogbyid', methods=["POST"])
 def getBlogById():
     if request.method == "POST":
@@ -89,14 +88,14 @@ def getBlogById():
 
 #region Insert One Blog
 @app.route('/addblog', methods=['POST'])
-@tokenReq
-def addblog():
+@token_Req
+def addblog(self):
     res = []
     code = 500
     status = "fail"
     message = ""
-    token = request.headers["token"]
-    data = jwt.decode(token, app.config['SECRET_KEY'])
+    token = request.headers["Authorization"]
+    data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
     dummydata=User.objects.get(username=data["username"])
     try:
         if (request.method == 'POST'):
@@ -123,18 +122,20 @@ def addblog():
     return jsonify({"status":status,'data': res, "message":message}), code
 #endregion
 
-#region Update One Blog             // Bozuk scym bole ise
-@app.route('/editblog/<item_id>/', methods=['GET', 'POST'])
-@tokenReq
-def by_id(item_id):
+#region Update and Get One Blog           
+@app.route('/blog/<id>', methods=['GET', 'PUT'])
+@token_Req 
+def by_id(id):
     data = {}
     code = 500
     message = ""
     status = "fail"
     try:
-        if (request.method == 'POST'):
-            res = db['interntask.blog'].update_one({"_id": ObjectId(item_id)}, { "$set": request.get_json()})
-            if res:
+        if (request.method == 'PUT'):
+            body=request.get_json()
+            blog=Blog.objects.get(id=id)
+            blog.update(**body)
+            if blog:
                 message = "updated successfully"
                 status = "successful"
                 code = 201
@@ -143,15 +144,47 @@ def by_id(item_id):
                 status = "fail"
                 code = 404
         else:
-            data = Blog.objects.get(id=item_id).to_json()
+            data = Blog.objects.get(id=id).to_json()
             if data:
                 message = "item found"
                 status = "successful"
                 code = 200
             else:
-                message = "update failed"
+                message = "item not found"
                 status = "fail"
                 code = 404
+    except Exception as ee:
+        message =  str(ee)
+        status = "Error"
+
+    return jsonify({"status": status, "message":message,'data': data}), code
+#endregion
+
+#region Delete Blog
+@app.route('/delete/<id>', methods=['DELETE'])
+@token_Req
+def delete_one(id):
+    data ={}
+    code = 500
+    message = ""
+    status = "fail"
+    try:
+        if (request.method == 'DELETE'):
+            blog=Blog.objects.get(id=id)
+            blog.delete()
+            if blog:
+                message = "Delete successfully"
+                status = "successful"
+                code = 201
+            else:
+                message = "Delete failed"
+                status = "fail"
+                code = 404
+        else:
+            message = "Delete Method failed"
+            status = "fail"
+            code = 404
+           
     except Exception as ee:
         message =  str(ee)
         status = "Error"
@@ -187,24 +220,26 @@ def save_user():
 @app.route('/login', methods=['POST'])
 def login():
     if request.method == "POST":
-        username = request.json['username']
-        password = request.json['password']  # password
-        user = User.objects.get(username=username)
+            auth = request.get_json()
+    if not auth or not auth.get('username') or not auth.get('password'):
+        return make_response('Could not verify!', 401, {'WWW-Authenticate': 'Basic-realm= "Login required!"'})
 
-        if bcrypt.check_password_hash(user["password"], password):
-                token = jwt.encode({'username': username, 'exp': datetime.datetime.utcnow(
-                ) + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
-                token=token.decode('utf8')
-                return jsonify({'token': token})
+    user = User.objects.get(username=auth['username'])
+    if not user:
+        return make_response('Could not verify user, Please signup!', 401, {'WWW-Authenticate': 'Basic-realm= "No user found!"'})
+    if bcrypt.check_password_hash(user["password"], auth.get('password')):
+       token = jwt.encode({'username': user.username}, app.config['SECRET_KEY'])
+               
+       return jsonify({'token': token,"user":user.to_json()})
 
-        else:
-                return {"message": "Password invalid"}
+    else:
+        return {"message": "Password invalid"}
 
 #endregion            
 
 #region Logout
 @app.route('/logout', methods=['POST'])
-@tokenReq
+
 def logout():
     return jsonify({"message": True})
 #endregion
