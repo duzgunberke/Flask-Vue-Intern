@@ -165,7 +165,7 @@ def by_id(current_user,id):
 #region Delete Blog                     Is not working :'(
 @app.route('/delete/<id>', methods=['DELETE'])
 @token_Req
-def delete_one(id):
+def delete_one(current_user, id):
     data ={}
     code = 500
     message = ""
@@ -259,7 +259,7 @@ def user():
 #endregion
 
 #region Get Current User
-@app.route('/currentuser',methods=['GET'])
+@app.route('/currentuser', methods=['GET'])
 @token_Req
 def currentuser(current_user):
     username=current_user['username']

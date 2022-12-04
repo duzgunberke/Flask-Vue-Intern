@@ -33,7 +33,7 @@
                 
                 localStorage.setItem('token',response.data.token);
                 window.localStorage.setItem('user',JSON.stringify(response.data.user))
-                this.$router.push('/');
+                this.$router.push('/mypage');
             }
         }
     }

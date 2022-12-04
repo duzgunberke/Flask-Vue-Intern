@@ -1,11 +1,12 @@
 <template>
   <div id="app">
     <NavComponent :user="user"/> 
-    <div class="auth-wrapper">
-      <div class="auth-inner">
-         <RouterView :user="user"/>
+      <div class="container" id="center">
+        
+        <RouterView :user="user"/>
       </div>
-    </div>
+      
+    
   </div>
 </template>
 
@@ -21,6 +22,7 @@ export default{
   data(){
         return {
             user:null
+            
         }
     },
      created(){
@@ -53,6 +55,13 @@ body{
   font-family: 'Fira Sans',sans-serif;
 }
 
+#center{
+  
+  margin-top: 100px;
+  
+  padding: 10px;
+
+}
 h1,h2,h3,h4,h5,h6,label,span{
   font-weight:500;
   font-family:Fira Sans,sans-serif;

@@ -18,6 +18,9 @@
           <li class="nav-item">
             <a href="javascript:void(0)" @click="handleClick" class="nav-link">Logout</a>
           </li>
+          <li class="nav-item">
+            <router-link  class="nav-link" to="/mypage">My Blogs</router-link>
+          </li>
         </ul>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
