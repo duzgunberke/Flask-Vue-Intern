@@ -6,12 +6,17 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="!user">
           <li class="nav-item">
             <router-link class="nav-link" to="/login">Login</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/register">Sign Up</router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="user">
+          <li class="nav-item">
+            <a href="javascript:void(0)" @click="handleClick" class="nav-link">Logout</a>
           </li>
         </ul>
         <form class="d-flex" role="search">
@@ -25,6 +30,14 @@
 
 <script>
 export default{
-    name:'NavComponent'
+    name:'NavComponent',
+    props:['user'],
+    methods:{
+      handleClick(){
+        window.localStorage.removeItem('token');
+        window.localStorage.removeItem('user');
+    
+      }
+    }
 }
 </script>

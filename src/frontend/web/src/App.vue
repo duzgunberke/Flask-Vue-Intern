@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <NavComponent/> 
+    <NavComponent :user="user"/> 
     <div class="auth-wrapper">
       <div class="auth-inner">
-         <RouterView />
+         <RouterView :user="user"/>
       </div>
     </div>
   </div>
@@ -11,11 +11,31 @@
 
 <script>
 import NavComponent from './components/NavComponent.vue'
+// import axios from 'axios';
+
 export default{
   name: 'App',
   components:{
     NavComponent,
-  }
+  },
+  data(){
+        return {
+            user:null
+        }
+    },
+     created(){
+        // const response= axios.get('currentuser',{
+        //     headers:{
+        //         Authorization:'Bearer '+ localStorage.getItem('token')
+        //     }
+        // });
+        // console.log(response);
+        this.user=JSON.parse(window.localStorage.getItem('user'));
+        console.log("AAAAAAAAA")
+        console.log(this.user)
+        
+        
+    }
 }
 
 </script>
