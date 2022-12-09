@@ -91,6 +91,34 @@ def getBlogById():
         return make_response(jsonify(blog.to_json()))
 #endregion
 
+#region Get Blog By Author
+@app.route('/getblogbyauthor', methods=["GET"])
+@token_Req
+def getblogbybuthor(current_user):
+    res = []
+    code = 500
+    status = "fail"
+    message = ""
+    try:
+        if(request.method == 'GET'):
+            for blog in Blog.objects(author=current_user["username"]):  
+             res.append(blog.to_json())
+                 
+            if res:
+             message = "blogs retrieved"
+             status = 'successful'
+             code = 200
+            else:
+             message = "no blogs found"
+             status = 'successful'
+             code = 200
+        else:
+            return "This method is not correct !"     
+    except Exception as ee:
+        res = {"error": str(ee)}
+    return jsonify({"status":status,'data': res, "message":message}), code    
+#endregion
+
 #region Insert One Blog
 @app.route('/addblog', methods=['POST'])
 @token_Req
@@ -163,16 +191,16 @@ def by_id(current_user,id):
 #endregion
 
 #region Delete Blog                     Is not working :'(
-@app.route('/delete/<id>', methods=['DELETE'])
+@app.route('/delete/<_id>', methods=['DELETE'])
 @token_Req
-def delete_one(current_user, id):
-    data ={}
+def delete_one(current_user,_id):
+    data =[]
     code = 500
     message = ""
     status = "fail"
     try:
         if (request.method == 'DELETE'):
-            blog=Blog.objects(id=id).first()
+            blog=Blog.objects(id=_id).first()
             blog.delete()
             if blog:
                 message = "Delete successfully"
