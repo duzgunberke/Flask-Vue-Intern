@@ -32,15 +32,21 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default{
     name:'NavComponent',
-    props:['user'],
+    
     methods:{
       handleClick(){
         window.localStorage.removeItem('token');
-        window.localStorage.removeItem('user');
+        window.localStorage.removeItem('user',null);
+        this.$store.dispatch('user',null);
+        this.$router.push('/');
     
       }
+    },
+    computed:{
+      ...mapGetters(['user'])
     }
 }
 </script>

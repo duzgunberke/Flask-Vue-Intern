@@ -3,7 +3,7 @@ import LoginComponent from '../components/LoginComponent.vue'
 import RegisterComponent from '../components/RegisterComponent.vue'
 import BlogListComponent from '../components/BlogListComponent.vue'
 import AddOrUpdateBlog from '../components/AddOrUpdateBlog.vue'
-
+import BlogDetail from '../components/BlogDetail.vue'
 
 import { createRouter, createWebHistory } from "vue-router"
     const routeInfos = [
@@ -22,6 +22,10 @@ import { createRouter, createWebHistory } from "vue-router"
         {
             path : "/register",
             component : RegisterComponent
+        },
+        {
+            path : "/blogdetail/:id",
+            component : BlogDetail
         },
         {
             path : "/addorupdateblog",

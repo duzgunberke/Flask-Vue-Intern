@@ -8,3 +8,4 @@ Werkzeug==2.2.0
 MarkupSafe==1.1.1
 Jinja2==2.2.0
 itsdangerous==1.1.0
+bson==0.5.10

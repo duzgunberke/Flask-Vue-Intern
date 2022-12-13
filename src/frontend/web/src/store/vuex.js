@@ -1,14 +1,10 @@
 
-import Vuex from 'vuex';
+import { createStore } from "vuex";
 
-
-
-const state ={
-    user:null
-};
-
-const stores=new Vuex.Store({
-    state,
+const store = createStore({
+    state:{
+        user:null
+    },
     getters:{
         user:(state)=>{
             return state.user;
@@ -26,4 +22,4 @@ const stores=new Vuex.Store({
     }
 });
 
-export default stores;
+export default store;

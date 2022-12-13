@@ -1,11 +1,15 @@
 <template>
 <div class="row">
-  <div class="col-sm-3 p-2" v-for="blog in blogs" v-bind:key="blog.id">
+  <div class="col-sm-3 p-2" v-for="blog in blogs"  v-bind:key="blog.id">
+
+    {{blog}}
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">{{ blog.title }}</h5>
-        <p class="card-text">{{blog.description}}</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <p class="card-text">{{blog.description.substring(0,60)}}...</p>
+        <!-- <a href="javascript:void(0)" @click="getdetailClick(blog.id)" class="btn btn-primary">Details...</a> -->
+            <a v-bind:href="'/blogdetail/'+ blog._id" class="btn btn-primary">Details...</a>
+
       </div>
     </div>
   </div>
@@ -17,7 +21,14 @@
 //import {getAllBlogs} from '../Functions'
     export default{
         name:'BlogListComponent',
-
+        methods:{
+          getdetailClick(_id){
+            const blogId = JSON.stringify({ "id": _id });
+              const response=axios.post("getblogbyid", blogId);
+              console.log(response)
+                         
+          }
+        },
         data(){
         return {
             blogs:null
@@ -30,11 +41,7 @@
           console.log(response),
           this.blogs=response.data.data
         });
-        console.log(this.blogs);
-            
-                
-        
-        
+        console.log(this.blogs);  
     }
   
     

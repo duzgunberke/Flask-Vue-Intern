@@ -15,11 +15,11 @@ import datetime
 from flask_bcrypt import Bcrypt
 from functools import wraps
 from pymongo import MongoClient
-from flasgger import Swagger
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-swagger = Swagger(app)
+
 bcrypt = Bcrypt(app)
 app.config["SECRET_KEY"] = "csharpbetternthanpython18"
 DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
@@ -33,7 +33,7 @@ def token_Req(f):
         # ensure the jwt-token is passed with the headers
         if 'Authorization' in request.headers or 'x-access-token' in request.headers or 'token' in request.json:
             token = request.headers.get(
-                'x-access-token', None) or request.json.get('token', None) or request.headers.get('Authorization')
+                'x-access-token', None) or request.headers.get('Authorization')
             token = token.replace('Bearer ', '')
         if not token: # throw error if no token provided
             return make_response(jsonify({"message": "A valid token is missing!"}), 401)
@@ -87,13 +87,13 @@ def getBlogById():
     if request.method == "POST":
         id = request.json['id']
         blog = Blog.objects.get(id=id)
-
         return make_response(jsonify(blog.to_json()))
 #endregion
 
 #region Get Blog By Author
 @app.route('/getblogbyauthor', methods=["GET"])
 @token_Req
+#@cross_origin()                    Abi CORS hatası gelmiyprdu cozdum sandım geldi 
 def getblogbybuthor(current_user):
     res = []
     code = 500
@@ -103,7 +103,6 @@ def getblogbybuthor(current_user):
         if(request.method == 'GET'):
             for blog in Blog.objects(author=current_user["username"]):  
              res.append(blog.to_json())
-                 
             if res:
              message = "blogs retrieved"
              status = 'successful'
@@ -255,6 +254,7 @@ def login():
         return make_response('Could not verify!', 401, {'WWW-Authenticate': 'Basic-realm= "Login required!"'})
 
     user = User.objects.get(username=auth['username'])
+    
     if not user:
         return make_response('Could not verify user, Please signup!', 401, {'WWW-Authenticate': 'Basic-realm= "No user found!"'})
     if bcrypt.check_password_hash(user["password"], auth.get('password')):
@@ -296,5 +296,5 @@ def currentuser(current_user):
 #endregion
 
 if __name__ == '__main__':
-
+    
     app.run(use_reloader=True,debug=True, host="0.0.0.0", port=5000)

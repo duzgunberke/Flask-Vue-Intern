@@ -4,7 +4,6 @@ import json
 from bson import json_util
 
 class Blog(Document):
-    
     title = StringField(Required=True)
     author = StringField(Required=True)
     description = StringField(Required=True)

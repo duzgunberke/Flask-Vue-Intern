@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <NavComponent :user="user"/> 
+    <NavComponent /> 
       <div class="container" id="center">
         
-        <RouterView :user="user"/>
+        <RouterView />
       </div>
       
     
@@ -12,7 +12,8 @@
 
 <script>
 import NavComponent from './components/NavComponent.vue'
-// import axios from 'axios';
+import axios from 'axios';
+
 
 export default{
   name: 'App',
@@ -26,13 +27,9 @@ export default{
         }
     },
      created(){
-        // const response= axios.get('currentuser',{
-        //     headers:{
-        //         Authorization:'Bearer '+ localStorage.getItem('token')
-        //     }
-        // });
-        // console.log(response);
-        this.user=JSON.parse(window.localStorage.getItem('user'));
+        const response= axios.get('currentuser');
+       this.$store.dispatch('user',response);
+        //this.user=JSON.parse(window.localStorage.getItem('user'));
         console.log("AAAAAAAAA")
         console.log(this.user)
         
