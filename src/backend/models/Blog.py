@@ -9,9 +9,10 @@ class Blog(Document):
     description = StringField(Required=True)
     
     def to_json(self):
-            bson_data = {'title': self.title, 'author': self.author,'description': self.description}
-
-            json_data_with_backslashes = json_util.dumps(bson_data)
-            json_data = json.loads(json_data_with_backslashes)
-            return json_data
-    
+        return {
+            "_id": str(self.pk),
+            "title": self.title,
+            "author": self.author,
+            "description": self.description
+        } 
+  

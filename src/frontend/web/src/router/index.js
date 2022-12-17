@@ -2,8 +2,9 @@ import HomeComponent from '../components/HomeComponent.vue'
 import LoginComponent from '../components/LoginComponent.vue'
 import RegisterComponent from '../components/RegisterComponent.vue'
 import BlogListComponent from '../components/BlogListComponent.vue'
-import AddOrUpdateBlog from '../components/AddOrUpdateBlog.vue'
+import AddBlog from '../components/AddBlog.vue'
 import BlogDetail from '../components/BlogDetail.vue'
+import UpdateBlog from '../components/UpdateBlog.vue'
 
 import { createRouter, createWebHistory } from "vue-router"
     const routeInfos = [
@@ -28,8 +29,12 @@ import { createRouter, createWebHistory } from "vue-router"
             component : BlogDetail
         },
         {
-            path : "/addorupdateblog",
-            component : AddOrUpdateBlog
+            path : "/addblog",
+            component : AddBlog
+        },
+        {
+            path : "/updateblog/:id",
+            component : UpdateBlog
         }
     ]
     

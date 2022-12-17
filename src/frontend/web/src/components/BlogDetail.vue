@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section class="vh-100" style="background-color: #9a616d">
+        <section class="vh-100">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-70">
                 <div class="col col-xxxl-10">
@@ -11,12 +11,11 @@
                             </div>
                         </div>
                     </div>
-                    <h1 style="color:black">{{ title }}</h1>
+                    <h1>{{ title }}</h1>
                     <hr>
-                    <h3 style="color:floralwhite">{{ description }}</h3>
+                    <h3>{{ description }}</h3>
                     <br>
-                    <h4>Author</h4>
-                    <h4>{{ author }} </h4>
+                    <h2>Author : {{ author }}</h2>
                     <hr>
                 </div>
             </div>

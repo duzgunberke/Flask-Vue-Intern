@@ -1,8 +1,6 @@
 <template>
 <div class="row">
-  <div class="col-sm-3 p-2" v-for="blog in blogs"  v-bind:key="blog.id">
-
-    {{blog}}
+  <div class="col-sm-3 p-2" v-for="blog in blogs"  v-bind:key="blog._id">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">{{ blog.title }}</h5>

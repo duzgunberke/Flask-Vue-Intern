@@ -7,7 +7,7 @@ from models.User import User
 from models.Blog import Blog
 
 from flask import Flask, jsonify,request, Response, make_response
-from flask_cors import CORS 
+from flask_cors import CORS , cross_origin
 from bson import ObjectId
 import json
 import jwt
@@ -18,7 +18,8 @@ from pymongo import MongoClient
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 bcrypt = Bcrypt(app)
 app.config["SECRET_KEY"] = "csharpbetternthanpython18"
@@ -189,7 +190,7 @@ def by_id(current_user,id):
     return jsonify({"status": status, "message":message,'data': data}), code
 #endregion
 
-#region Delete Blog                     Is not working :'(
+#region Delete Blog                     
 @app.route('/delete/<_id>', methods=['DELETE'])
 @token_Req
 def delete_one(current_user,_id):

@@ -35,11 +35,16 @@
                     password:this.password
                 });
                 console.log(response);
-                
-                localStorage.setItem('token',response.data.token);
-                window.localStorage.setItem('user',JSON.stringify(response.data.user))
-                this.$store.dispatch('user',response.data.user);
-                this.$router.push('/mypage');
+                if(response.data.message){
+                    this.error=response.data.message
+                }
+                else{
+
+                    localStorage.setItem('token',response.data.token);
+                    //window.localStorage.setItem('user',JSON.stringify(response.data.user))
+                    this.$store.dispatch('user',response.data.user);
+                    this.$router.push('/mypage');
+                }
                 }catch(e){
                     this.error="Invalid username/password !"
                 }

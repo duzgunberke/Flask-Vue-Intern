@@ -4,7 +4,7 @@
         <h1 v-if="!user">You are not logged in</h1>
 
     </div>
-    <div>
+    <div v-if="user">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -15,19 +15,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="blog in blogs" v-bind:key="blog.id">
+                <tr v-for="blog in blogs" v-bind:key="blog._id">
                     <th scope="row">#</th>
                     <td>{{blog.title}}</td>
                     <td>
 
-                        <a class="btn btn-warning">Update</a>
+                        <a class="btn btn-warning" v-bind:href="'/updateblog/'+ blog._id">Update</a>
                     </td>
-                    <td> <a class="btn btn-danger">Delete</a>
+                    <td>
+                         <a class="btn btn-danger" @click="deleteSubmit(blog._id)">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <router-link  class="btn btn-primary" to="/addorupdateblog">New Blog</router-link>
+        <router-link  class="btn btn-primary" to="/addblog">New Blog</router-link>
     </div>
 </template>
 
@@ -39,7 +40,25 @@ export default {
     name: 'HomeComponent',
     computed: {
         ...mapGetters(['user'])
-    },data(){
+    },
+    methods:{
+        deleteSubmit(id){
+      axios.delete(`delete/${id}` ,{
+        headers: { Authorization:'Bearer ' + localStorage.getItem('token')}
+      })
+      
+      this.$router.push('/');
+    },
+    updateSubmit(id){
+      axios.get(`blog/${id}` ,{
+        headers: { Authorization:'Bearer ' + localStorage.getItem('token')}
+      })
+      
+      this.$router.push('/');
+    }
+    },
+    
+    data(){
         return {
             blogs:null
         }
@@ -56,11 +75,8 @@ export default {
           this.blogs=response.data.data
         });
         console.log(this.blogs);
-            
-                
-        
-        
     }
+  
 
 }
 </script>

@@ -22,10 +22,6 @@
             <router-link  class="nav-link" to="/mypage">My Blogs</router-link>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
     </div>
   </nav>
@@ -39,7 +35,7 @@ export default{
     methods:{
       handleClick(){
         window.localStorage.removeItem('token');
-        window.localStorage.removeItem('user',null);
+        //window.localStorage.removeItem('user',null);
         this.$store.dispatch('user',null);
         this.$router.push('/');
     
