@@ -2,7 +2,6 @@ import mongoengine as db
 
 database_name = "interntask"
 
-# from classes import User,Blog 
 from models.User import User
 from models.Blog import Blog
 
@@ -20,11 +19,13 @@ from pymongo import MongoClient
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
 bcrypt = Bcrypt(app)
+
+#region Conf
 app.config["SECRET_KEY"] = "csharpbetternthanpython18"
 DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
 db.connect(host=DB_URL)
+#endregion
 
 #region JWT Token
 def token_Req(f):
