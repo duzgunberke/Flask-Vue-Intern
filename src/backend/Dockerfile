@@ -1,10 +1,14 @@
-FROM python:3.11
+# syntax=docker/dockerfile:1
+
+FROM python:3.11-slim-buster
+
+WORKDIR /python-docker
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+RUN pip install python-dotenv
 
 
-WORKDIR /main
 COPY . .
 
-RUN pip install -r requirements.txt
-
-ENTRYPOINT [ "python" ]
-CMD ["main.py"]
+CMD [ "python", "main.py"]
