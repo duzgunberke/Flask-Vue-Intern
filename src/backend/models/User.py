@@ -14,6 +14,7 @@ class User(Document):
     password = StringField(Required=True)
     email = EmailField()
     author = BooleanField(default=False)
+    role = StringField(default="user")
     utc_now = datetime.datetime.utcnow()
     utc = pytz.timezone('UTC')
     aware_date = utc.localize(utc_now)
@@ -21,7 +22,7 @@ class User(Document):
     date_modified = DateTimeField(default=aware_date.astimezone(turkey))
     
     def to_json(self):
-            bson_data = {'name': self.name, 'surname': self.surname,'username': self.username,'password': self.password,'email': self.email}
+            bson_data = {'name': self.name, 'surname': self.surname,'username': self.username,'password': self.password,'email': self.email,'role':self.role}
 
             json_data_with_backslashes = json_util.dumps(bson_data)
             json_data = json.loads(json_data_with_backslashes)

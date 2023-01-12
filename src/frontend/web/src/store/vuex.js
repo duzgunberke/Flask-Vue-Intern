@@ -1,10 +1,12 @@
 
 import { createStore } from "vuex";
 
+const state={
+    user:null
+};
+
 const store = createStore({
-    state:{
-        user:null
-    },
+    state,
     getters:{
         user:(state)=>{
             return state.user;

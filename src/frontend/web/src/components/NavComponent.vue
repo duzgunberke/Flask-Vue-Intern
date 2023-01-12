@@ -18,8 +18,14 @@
           <li class="nav-item">
             <a href="javascript:void(0)" @click="handleClick" class="nav-link">Logout</a>
           </li>
+          <li class="nav-item" v-if="role=='author'">
+            <router-link  class="nav-link"  to="/mypage">My Blogs</router-link>
+          </li>
           <li class="nav-item">
-            <router-link  class="nav-link" to="/mypage">My Blogs</router-link>
+            <router-link  class="nav-link"  to="/settings">Settings</router-link>
+          </li>
+          <li class="nav-item"  v-if="role=='admin'">
+            <router-link  class="nav-link" to="/users">App CMS</router-link>
           </li>
         </ul>
       </div>
@@ -35,14 +41,16 @@ export default{
     methods:{
       handleClick(){
         window.localStorage.removeItem('token');
-        //window.localStorage.removeItem('user',null);
         this.$store.dispatch('user',null);
         this.$router.push('/');
     
       }
     },
     computed:{
-      ...mapGetters(['user'])
+      ...mapGetters(['user']), 
+      role() {
+      return this.user.role
+    }
     }
 }
 </script>
