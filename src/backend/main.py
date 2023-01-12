@@ -6,7 +6,7 @@ from models.User import User
 from models.Blog import Blog
 
 from flask import Flask, jsonify,request, Response, make_response
-from flask_cors import CORS , cross_origin
+from flask_cors import CORS 
 from bson import ObjectId
 import json
 import jwt
@@ -95,7 +95,6 @@ def getBlogById():
 #region Get Blog By Author
 @app.route('/getblogbyauthor', methods=["GET"])
 @token_Req
-#@cross_origin()                    Abi CORS hatası gelmiyprdu cozdum sandım geldi 
 def getblogbybuthor(current_user):
     res = []
     code = 500
@@ -130,22 +129,25 @@ def addblog(current_user):
     message = ""
     try:
         if (request.method == 'POST'):
-            title = request.json['title']
-            author = current_user["username"]
-            description = request.json['description']
-            blog=Blog(title=title, author=author,description=description)
-            blog.save()
-            
-            if  blog !=0:
-                message = "item saved"
-                status = 'successful'
-                code = 201
-                res = "{}".format(blog.title)
+            if(current_user["role"]=="author" or current_user["role"]=="admin"):
+                title = request.json['title']
+                author = current_user["username"]
+                description = request.json['description']
+                blog=Blog(title=title, author=author,description=description)
+                blog.save()
+                
+                if  blog !=0:
+                    message = "item saved"
+                    status = 'successful'
+                    code = 201
+                    res = "{}".format(blog.title)
+                else:
+                    message = "insert error"
+                    status="fail"
+                    res = 'Not working'
+                    code = 500
             else:
-                message = "insert error"
-                status="fail"
-                res = 'Not working'
-                code = 500
+                return "This user role is not correct !!!"        
         else:
              return "This method is not correct !"
     except Exception as ee:
@@ -278,14 +280,16 @@ def logout():
 
 #region Get Users
 @app.route('/users', methods=["GET"])
-def user():
-
-    users = []
-    for user in User.objects():  
-        users.append(user.to_json())
-        print(users)
-    # json_users=json.dumps(users)
-    return make_response(jsonify(users)) 
+def users(current_user):
+    if current_user["role"]=='admin':
+        users = []
+        for user in User.objects():  
+            users.append(user.to_json())
+            print(users)
+        # json_users=json.dumps(users)
+        return make_response(jsonify(users))
+    else:
+        return {'message': 'User is not a admin !'} 
 #endregion
 
 #region Get Current User

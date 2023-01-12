@@ -4,7 +4,7 @@
         <h1 v-if="!user">You are not logged in</h1>
 
     </div>
-    <div v-if="role!='user'">
+    <div v-if="user">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -30,9 +30,6 @@
         </table>
         <router-link  class="btn btn-primary" to="/addblog">New Blog</router-link>
     </div>
-    <div v-else>
-        <h1>You are not author ! </h1>
-    </div>
 </template>
 
 <script>
@@ -40,12 +37,9 @@ import { mapGetters } from 'vuex'
 import axios from 'axios';
 
 export default {
-    name: 'HomeComponent',
+    name: 'UserList',
     computed: {
-        ...mapGetters(['user']),
-        role() {
-      return this.user.role
-    }
+        ...mapGetters(['user'])
     },
     methods:{
         deleteSubmit(id){
@@ -81,7 +75,6 @@ export default {
           this.blogs=response.data.data
         });
         console.log(this.blogs);
-
     }
   
 

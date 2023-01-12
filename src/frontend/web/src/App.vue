@@ -29,11 +29,7 @@ export default{
      created(){
         const response= axios.get('currentuser');
        this.$store.dispatch('user',response);
-        //this.user=JSON.parse(window.localStorage.getItem('user'));
-        console.log("AAAAAAAAA")
         console.log(this.user)
-        
-        
     }
 }
 
