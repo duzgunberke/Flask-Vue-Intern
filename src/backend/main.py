@@ -6,7 +6,7 @@ from models.User import User
 from models.Blog import Blog
 
 from flask import Flask, jsonify,request, Response, make_response
-from flask_cors import CORS , cross_origin
+from flask_cors import CORS 
 from bson import ObjectId
 import json
 import jwt
@@ -95,7 +95,6 @@ def getBlogById():
 #region Get Blog By Author
 @app.route('/getblogbyauthor', methods=["GET"])
 @token_Req
-#@cross_origin()                    Abi CORS hatası gelmiyprdu cozdum sandım geldi 
 def getblogbybuthor(current_user):
     res = []
     code = 500

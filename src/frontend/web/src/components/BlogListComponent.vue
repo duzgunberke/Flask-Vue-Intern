@@ -5,7 +5,6 @@
       <div class="card-body">
         <h5 class="card-title">{{ blog.title }}</h5>
         <p class="card-text">{{blog.description.substring(0,60)}}...</p>
-        <!-- <a href="javascript:void(0)" @click="getdetailClick(blog.id)" class="btn btn-primary">Details...</a> -->
             <a v-bind:href="'/blogdetail/'+ blog._id" class="btn btn-primary">Details...</a>
 
       </div>
@@ -16,17 +15,8 @@
     
     <script>
       import axios from "axios"
-//import {getAllBlogs} from '../Functions'
     export default{
         name:'BlogListComponent',
-        methods:{
-          getdetailClick(_id){
-            const blogId = JSON.stringify({ "id": _id });
-              const response=axios.post("getblogbyid", blogId);
-              console.log(response)
-                         
-          }
-        },
         data(){
         return {
             blogs:null
