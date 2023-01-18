@@ -165,17 +165,20 @@ def by_id(current_user,id):
     status = "fail"
     try:
         if (request.method == 'PUT'):
-            body=request.get_json()
-            blog=Blog.objects(id=id).first()
-            blog.update(**body)
-            if blog:
-                message = "updated successfully"
-                status = "successful"
-                code = 201
+            if(current_user["role"]=="author" or current_user["role"]=="admin"):
+                body=request.get_json()
+                blog=Blog.objects(id=id).first()
+                blog.update(**body)
+                if blog:
+                    message = "updated successfully"
+                    status = "successful"
+                    code = 201
+                else:
+                    message = "update failed"
+                    status = "fail"
+                    code = 404
             else:
-                message = "update failed"
-                status = "fail"
-                code = 404
+                return "This user role is not correct!"        
         else:
             data = Blog.objects(id=id).first().to_json()
             if data:
