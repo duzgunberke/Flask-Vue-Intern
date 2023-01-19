@@ -21,6 +21,9 @@
           <li class="nav-item" v-if="role=='author'">
             <router-link  class="nav-link"  to="/mypage">My Blogs</router-link>
           </li>
+          <li class="nav-item" v-if="role=='admin'">
+            <router-link  class="nav-link"  to="/mypage">My Blogs</router-link>
+          </li>
           <li class="nav-item">
             <router-link  class="nav-link"  to="/settings">Settings</router-link>
           </li>

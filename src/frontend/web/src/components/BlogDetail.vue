@@ -15,7 +15,7 @@
                     <hr>
                     <h3>{{ description }}</h3>
                     <br>
-                    <h2>Author : {{ author }}</h2>
+                    <h2>Author : <a v-bind:href="'/authorblogs/'+ author">{{ author }}</a></h2>
                     <hr>
                 </div>
             </div>

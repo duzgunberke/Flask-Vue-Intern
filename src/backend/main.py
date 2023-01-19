@@ -119,6 +119,32 @@ def getblogbybuthor(current_user):
     return jsonify({"status":status,'data': res, "message":message}), code    
 #endregion
 
+#region Get Blogs By Author On Mainpage
+@app.route('/authorblogs/<author>', methods=["GET"])
+def blogsbybuthor(author):
+    res = []
+    code = 500
+    status = "fail"
+    message = ""
+    try:
+        if(request.method == 'GET'):
+            for blog in Blog.objects(author=author):  
+             res.append(blog.to_json())
+            if res:
+             message = "blogs retrieved"
+             status = 'successful'
+             code = 200
+            else:
+             message = "no blogs found"
+             status = 'successful'
+             code = 200
+        else:
+            return "This method is not correct !"     
+    except Exception as ee:
+        res = {"error": str(ee)}
+    return jsonify({"status":status,'data': res, "message":message}), code    
+#endregion
+
 #region Insert One Blog
 @app.route('/addblog', methods=['POST'])
 @token_Req
@@ -282,14 +308,48 @@ def logout():
 #endregion
 
 #region Get Users
+@app.route('/edituser', methods=["PUT"])
+@token_Req
+def editUsers(current_user):
+    data = {}
+    code = 500
+    message = ""
+    status = "fail"
+    try:
+        if (request.method == 'PUT'):
+            if(current_user["role"]=="author" or current_user["role"]=="admin"):
+                body=request.get_json()
+                user=User.objects(author=current_user["username"]).first()
+                user.update(**body)
+                if user:
+                    message = "updated successfully"
+                    status = "successful"
+                    code = 201
+                else:
+                    message = "update failed"
+                    status = "fail"
+                    code = 404
+            else:
+                return "This user role is not correct!"        
+        else:
+             return "This method is not correct"
+    except Exception as ee:
+        message =  str(ee)
+        status = "Error"
+
+    return jsonify({"status": status, "message":message,'data': data}), code
+    
+#endregion
+
+#region Get Users
 @app.route('/users', methods=["GET"])
+@token_Req
 def users(current_user):
     if current_user["role"]=='admin':
         users = []
         for user in User.objects():  
             users.append(user.to_json())
             print(users)
-        # json_users=json.dumps(users)
         return make_response(jsonify(users))
     else:
         return {'message': 'User is not a admin !'} 
