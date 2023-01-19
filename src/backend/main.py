@@ -58,7 +58,7 @@ def greetings():
 
 #region Get All Blogs
 @app.route('/blogs',methods=['GET'])
-def getall():
+def allBlogs():
     res = []
     code = 500
     status = "fail"
@@ -85,7 +85,7 @@ def getall():
 
 #region Get Blog By ID               
 @app.route('/getblogbyid', methods=["POST"])
-def getBlogById():
+def blogById():
     if request.method == "POST":
         id = request.json['id']
         blog = Blog.objects.get(id=id)
@@ -95,7 +95,7 @@ def getBlogById():
 #region Get Blog By Author
 @app.route('/getblogbyauthor', methods=["GET"])
 @token_Req
-def getblogbybuthor(current_user):
+def blogbybuthor(current_user):
     res = []
     code = 500
     status = "fail"
@@ -307,7 +307,7 @@ def logout():
     return jsonify({"message": True})
 #endregion
 
-#region Get Users
+#region Edit Users
 @app.route('/edituser', methods=["PUT"])
 @token_Req
 def editUsers(current_user):
@@ -319,7 +319,8 @@ def editUsers(current_user):
         if (request.method == 'PUT'):
             if(current_user["role"]=="author" or current_user["role"]=="admin"):
                 body=request.get_json()
-                user=User.objects(author=current_user["username"]).first()
+                user=User.objects(username=current_user["username"])
+                print(user)
                 user.update(**body)
                 if user:
                     message = "updated successfully"
