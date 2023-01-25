@@ -5,7 +5,7 @@ import pytz
 from pytz import timezone
 import json
 from bson import json_util
-
+from enum import Enum
 
 class User(Document):
     name = StringField()
@@ -27,3 +27,8 @@ class User(Document):
             json_data_with_backslashes = json_util.dumps(bson_data)
             json_data = json.loads(json_data_with_backslashes)
             return json_data
+        
+class UserRoles(Enum, str):
+    admin = 'admin'
+    user = 'user'
+    author = 'author'   
