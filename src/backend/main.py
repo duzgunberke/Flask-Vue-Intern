@@ -1,6 +1,6 @@
 import mongoengine as db
 
-database_name = "interntask"
+
 
 from models.User import User
 from models.Blog import Blog
@@ -20,10 +20,10 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 bcrypt = Bcrypt(app)
-
+app.config.from_object('config.Config')
 #region Conf
-app.config["SECRET_KEY"] = "csharpbetternthanpython18"
-DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
+app.config["SECRET_KEY"] = app.config.get('SECRET_KEY')
+DB_URL= app.config.get('DATABASE_URI')
 db.connect(host=DB_URL)
 #endregion
 
