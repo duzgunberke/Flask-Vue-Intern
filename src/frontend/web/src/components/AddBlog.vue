@@ -18,7 +18,6 @@
 </template>
     
 <script>
-//import {mapGetters} from 'vuex'
 import axios from "axios"
 
 export default {
@@ -34,7 +33,7 @@ export default {
     },
     methods:{
         submitForm(){
-            axios.post('/addblog', this.form,{
+            axios.post('/blog', this.form,{
         headers: { Authorization:'Bearer ' + localStorage.getItem('token')}
       })
                  .then((res) => {

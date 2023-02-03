@@ -51,7 +51,7 @@ export default {
       methods:{
         async updateUser(){
            
-             const response = await axios.put(`/edituser`,{ 
+             const response = await axios.put(`/user`,{ 
                         name:this.name,
                         surname:this.surname,
                         email:this.email 

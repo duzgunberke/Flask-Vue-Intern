@@ -28,7 +28,3 @@ class User(Document):
             json_data = json.loads(json_data_with_backslashes)
             return json_data
         
-class UserRoles(Enum, str):
-    admin = 'admin'
-    user = 'user'
-    author = 'author'   

@@ -49,7 +49,7 @@ export default {
     },
     methods:{
         deleteSubmit(id){
-      axios.delete(`delete/${id}` ,{
+      axios.delete(`blog/${id}` ,{
         headers: { Authorization:'Bearer ' + localStorage.getItem('token')}
       })
       
@@ -71,7 +71,7 @@ export default {
     },
      created(){
             
-         axios.get('getblogbyauthor',{
+         axios.get('blogbyauthor',{
             headers:{
                 Authorization:'Bearer ' + localStorage.getItem('token')
             }

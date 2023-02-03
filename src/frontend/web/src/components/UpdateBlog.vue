@@ -21,7 +21,6 @@
     </template>
         
     <script>
-      //import { onMounted, ref } from "vue"
   import axios from "axios"
   import { useRoute } from "vue-router"
     

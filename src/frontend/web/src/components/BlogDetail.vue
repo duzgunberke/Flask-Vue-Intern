@@ -38,7 +38,7 @@
         const description = ref("");
         const author = ref("");
         onMounted(()=>{
-            axios.post('getblogbyid',{id})
+            axios.post('blogbyid',{id})
                     .then(response => {
                         title.value = response.data.title
                         description.value = response.data.description

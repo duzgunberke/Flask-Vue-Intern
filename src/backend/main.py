@@ -1,11 +1,11 @@
 import mongoengine as db
 
-database_name = "interntask"
 
 from models.User import User
 from models.Blog import Blog
-from models.User import UserRoles 
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 from flask import Flask, jsonify,request, Response, make_response
 from flask_cors import CORS 
 from bson import ObjectId
@@ -23,8 +23,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 bcrypt = Bcrypt(app)
 
 #region Conf
-app.config["SECRET_KEY"] = "csharpbetternthanpython18"
-DB_URL="mongodb+srv://duzgunberke:10.s0Bi0@pythoncluster.g4lwsqz.mongodb.net/{}?retryWrites=true&w=majority".format(database_name)
+app.config["SECRET_KEY"] = {os.getenv("SECRET_KEY")}
+DB_URL={os.getenv("DATABASE_URI")}
 db.connect(host=DB_URL)
 #endregion
 
@@ -42,7 +42,7 @@ def token_Req(f):
             return make_response(jsonify({"message": "A valid token is missing!"}), 401)
         try:
            # decode the token to obtain user email
-            data = jwt.decode(token, app.config['SECRET_KEY'],algorithms=['HS256'])
+            data = jwt.decode(token, os.getenv("SECRET_KEY"),algorithms=['HS256'])
             current_user = User.objects(username=data.get('username')).first()                 
         except:
             return make_response(jsonify({"message": "Invalid token!"}), 401)
@@ -86,7 +86,7 @@ def all_blogs():
     Raises
     ------
     Exception
-        It throws a 404 error when the blog objects cannot be found in db.
+        It throws a 500 error when the blog objects cannot be found in db.
         It throws a 504 error when the http method the user is using is incorrect
 
     """
@@ -106,7 +106,7 @@ def all_blogs():
             else:
              message = "no blogs found"
              status = 'successful'
-             code = 404
+             code = 500
         else:
             message = "This method is not correct !"  
             status = 'failed'
@@ -186,8 +186,8 @@ def blog_by_author(current_user):
              code = 200
             else:
              message = "no blogs found"
-             status = 'successful'
-             code = 200
+             status = 'fail'
+             code = 500
         else:
             message = "This method is not correct !" 
             status = "fail"
@@ -241,8 +241,8 @@ def blogs_by_buthor(author):
              code = 200
             else:
              message = "no blogs found"
-             status = 'successful'
-             code = 200
+             status = 'fail'
+             code = 500
         else:
             message = "This method is not correct !" 
             status = "fail"
@@ -254,7 +254,7 @@ def blogs_by_buthor(author):
 #endregion
 
 #region Insert One Blog
-@app.route('/addblog', methods=['POST'])
+@app.route('/blog', methods=['POST'])
 @token_Req
 def add_blog(current_user):
     """
@@ -376,7 +376,7 @@ def edit_blog_by_id(current_user,id):
                 else:
                     message = "update failed"
                     status = "fail"
-                    code = 404
+                    code = 500
             else:
                 message = "This user role is not correct!"
                 status = "fail"
@@ -400,7 +400,7 @@ def edit_blog_by_id(current_user,id):
 #endregion
 
 #region Delete Blog                     
-@app.route('/delete/<_id>', methods=['DELETE'])
+@app.route('/blog/<_id>', methods=['DELETE'])
 @token_Req
 def delete_one(current_user,_id):
     """
@@ -545,7 +545,7 @@ def login():
     if not user:
         return make_response('Could not verify user, Please signup!', 401, {'WWW-Authenticate': 'Basic-realm= "No user found!"'})
     if bcrypt.check_password_hash(user["password"], auth.get('password')):
-       token = jwt.encode({'username': user.username}, app.config['SECRET_KEY'])
+       token = jwt.encode({'username': user.username}, os.getenv("SECRET_KEY"))
                
        return jsonify({'token': token,"user":user.to_json()})
 
@@ -562,7 +562,7 @@ def logout():
 #endregion
 
 #region Edit Users
-@app.route('/edituser', methods=["PUT"])
+@app.route('/user', methods=["PUT"])
 @token_Req
 def edit_users(current_user):
     """
@@ -591,7 +591,7 @@ def edit_users(current_user):
     Raises
     ------
     Exception
-        It throws a 404 error when the user object suitable for the sent id cannot be found.
+        It throws a 500 error when the user object suitable for the sent id cannot be found.
         If he/she tries to login to an unauthorized endpoint, she gets a 403 error.
 
     """
@@ -612,7 +612,7 @@ def edit_users(current_user):
                 else:
                     message = "update failed"
                     status = "fail"
-                    code = 404
+                    code = 500
             else:
                 status = "fail"
                 code = 403
