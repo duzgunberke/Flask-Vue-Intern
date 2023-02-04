@@ -1,4 +1,3 @@
-
 # Flask-Vue-Intern
 
 Flask was used for the background in this project. Vue is used for the frontend. It is a basic blogging application.
@@ -129,5 +128,3 @@ In frontend folder :
 | How | Its     | Working                       |
 | :-------- | :------- | :-------------------------------- |
 | `token`      | `header` | The information of the logged in user stored in the token in the http header |
-
-
