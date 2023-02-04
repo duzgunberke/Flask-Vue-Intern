@@ -7,6 +7,7 @@ import BlogDetail from '../components/BlogDetail.vue'
 import UpdateBlog from '../components/UpdateBlog.vue'
 import UserList from '../components/UserList.vue'
 import SettingsComponent from '../components/SettingsComponent.vue'
+import AuthorBlogs from '../components/AuthorBlogs.vue'
 
 import { createRouter, createWebHistory } from "vue-router"
     const routeInfos = [
@@ -45,6 +46,10 @@ import { createRouter, createWebHistory } from "vue-router"
         {
             path : "/settings",
             component : SettingsComponent
+        },
+        {
+            path : "/authorblogs/:author",
+            component : AuthorBlogs
         }
     ]
     
