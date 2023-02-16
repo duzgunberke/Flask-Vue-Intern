@@ -6,7 +6,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="!user">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="user">
           <li class="nav-item">
             <router-link class="nav-link" to="/login">Login</router-link>
           </li>
@@ -14,7 +14,7 @@
             <router-link class="nav-link" to="/register">Sign Up</router-link>
           </li>
         </ul>
-        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="user">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="!user">
           <li class="nav-item">
             <a href="javascript:void(0)" @click="handleClick" class="nav-link">Logout</a>
           </li>
