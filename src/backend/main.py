@@ -34,7 +34,7 @@ def token_Req(f):
     def decorator(*args, **kwargs):
         token = None
         # ensure the jwt-token is passed with the headers
-        if 'Authorization' in request.headers or 'x-access-token' in request.headers or 'token' in request.json:
+        if 'Authorization' in request.headers or 'x-access-token' in request.headers:
             token = request.headers.get(
                 'x-access-token', None) or request.headers.get('Authorization')
             token = token.replace('Bearer ', '')
@@ -86,7 +86,7 @@ def all_blogs():
     Raises
     ------
     Exception
-        It throws a 500 error when the blog objects cannot be found in db.
+        It throws a 200 code when the blog objects cannot be found in db.
         It throws a 504 error when the http method the user is using is incorrect
 
     """
@@ -106,7 +106,7 @@ def all_blogs():
             else:
              message = "no blogs found"
              status = 'successful'
-             code = 500
+             code = 200
         else:
             message = "This method is not correct !"  
             status = 'failed'
